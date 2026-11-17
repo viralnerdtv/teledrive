@@ -34,7 +34,7 @@ concurrency:
 jobs:
   build-ios:
     name: Build iOS App & IPA
-    runs-on: macos-latest
+    runs-on: macos-15-intel
     timeout-minutes: 45
 
     steps:
