@@ -27,8 +27,15 @@ workflows:
           npm ci
 
       - name: Initialize iOS project
+        
+      - name: Initialize iOS project
         script: |
-          npm run tauri ios init -- --ci --skip-targets-install
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustc --version
+          cargo --version
+          cargo metadata --no-deps --format-version 1
+          npx tauri ios init --ci --skip-targets-install
+
 
       - name: Generate Xcode project
         script: |
