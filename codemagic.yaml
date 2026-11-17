@@ -70,7 +70,7 @@ workflows:
 
 
 
-        artifacts:
+  artifacts:
       - TeleDrive-unsigned.ipa
       - src-tauri/gen/apple/build/arm64/*.ipa
       - src-tauri/gen/apple/build/arm64/**/*.app
