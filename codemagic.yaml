@@ -41,7 +41,8 @@ workflows:
       - name: Build TeleDrive for iPhone
         script: |
           export PATH="$HOME/.cargo/bin:$PATH"
-          npm run tauri ios build -- --target aarch64 --debug --ci -- CODE_SIGNING_ALLOWED=NO
+          npm run tauri ios build -- --target aarch64 --debug --ci
+
 
     artifacts:
       - src-tauri/gen/apple/build/arm64/*.ipa
