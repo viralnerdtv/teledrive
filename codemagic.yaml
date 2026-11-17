@@ -1,0 +1,42 @@
+
+workflows:
+  teledrive-ios:
+    name: TeleDrive - iOS IPA
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+
+    environment:
+      xcode: latest
+      node: 22
+
+    scripts:
+      - name: Install Rust
+        script: |
+          rustup toolchain install stable
+          rustup default stable
+          rustup target add aarch64-apple-ios
+
+      - name: Install XcodeGen
+        script: |
+          brew install xcodegen
+
+      - name: Install Node dependencies
+        script: |
+          npm ci
+
+      - name: Initialize iOS project
+        script: |
+          npm run tauri ios init -- --ci --skip-targets-install
+
+      - name: Generate Xcode project
+        script: |
+          xcodegen generate --spec src-tauri/gen/apple/project.yml
+
+      - name: Build TeleDrive for iPhone
+        script: |
+          npm run tauri ios build -- --target aarch64 --debug --ci -- CODE_SIGNING_ALLOWED=NO
+
+    artifacts:
+      - src-tauri/gen/apple/build/arm64/*.ipa
+      - src-tauri/gen/apple/build/arm64/**/*.app
+      - /tmp/xcodebuild_logs/*.log
