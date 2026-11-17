@@ -38,10 +38,36 @@ workflows:
           export PATH="$HOME/.cargo/bin:$PATH"
           xcodegen generate --spec src-tauri/gen/apple/project.yml
 
+      
       - name: Build TeleDrive for iPhone
         script: |
           export PATH="$HOME/.cargo/bin:$PATH"
-          npm run tauri ios build -- --target aarch64 --debug --ci
+          npm run tauri ios build -- --target aarch64 --debug --ci --no-sign --archive-only
+
+      - name: Package unsigned IPA
+        script: |
+          set -e
+
+          ARCHIVE=$(find src-tauri/gen/apple -type d -name "*.xcarchive" -print -quit)
+
+          if [ -z "$ARCHIVE" ]; then
+            echo "Arquivo XCARCHIVE não encontrado"
+            exit 1
+          fi
+
+          APP=$(find "$ARCHIVE/Products/Applications" -maxdepth 1 -type d -name "*.app" -print -quit)
+
+          if [ -z "$APP" ]; then
+            echo "Aplicativo .app não encontrado"
+            exit 1
+          fi
+
+          mkdir -p "$CM_BUILD_DIR/ipa/Payload"
+          ditto "$APP" "$CM_BUILD_DIR/ipa/Payload/$(basename "$APP")"
+
+          cd "$CM_BUILD_DIR/ipa"
+          ditto -c -k --sequesterRsrc --keepParent Payload "$CM_BUILD_DIR/TeleDrive-unsigned.ipa"
+
 
 
     artifacts:
