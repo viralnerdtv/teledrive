@@ -9,12 +9,14 @@ workflows:
       xcode: latest
       node: 22
 
-    scripts:
+    scripts:      
       - name: Install Rust
         script: |
-          rustup toolchain install stable
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+          source "$HOME/.cargo/env"
           rustup default stable
           rustup target add aarch64-apple-ios
+
 
       - name: Install XcodeGen
         script: |
